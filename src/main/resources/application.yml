@@ -1,0 +1,43 @@
+server:
+  port: ${PORT:8080}
+  servlet:
+    session:
+      timeout: 60m
+  tomcat:
+    threads:
+      max: 200          # Tomcat 最大工作线程
+    accept-count: 1000  # 线程用满后的等待队列长度，压测 500 并发时避免连接被拒
+
+spring:
+  application:
+    name: inventory-management
+  datasource:
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${DB_NAME:inventory_db}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true&rewriteBatchedStatements=true
+    username: ${DB_USER:inventory}
+    password: ${DB_PASSWORD:change_me}
+    hikari:
+      maximum-pool-size: 50      # 连接池上限：并发事务数的上限
+      minimum-idle: 10
+      connection-timeout: 30000
+  sql:
+    init:
+      mode: always               # 每次启动执行 schema.sql / data.sql（脚本均可重复执行）
+      schema-locations: classpath:db/schema.sql
+      data-locations: classpath:db/data.sql
+      encoding: UTF-8
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate         # 表结构由 schema.sql 维护，Hibernate 只校验实体映射
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: Asia/Shanghai
+    show-sql: false
+  thymeleaf:
+    cache: true
+
+logging:
+  level:
+    root: INFO
+    com.cumt.inventory: INFO

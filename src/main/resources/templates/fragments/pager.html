@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 分页条：page 为 Spring Data Page 对象；链接由 app.js 补全当前查询参数 -->
+<div th:fragment="pager(page)" class="pager" th:if="${page.totalElements > 0}">
+    <div>共 <b th:text="${page.totalElements}">0</b> 条，第 <span th:text="${page.number + 1}">1</span> / <span th:text="${page.totalPages}">1</span> 页</div>
+    <div class="pages" th:if="${page.totalPages > 1}">
+        <a th:if="${page.hasPrevious()}" th:attr="data-page=${page.number - 1}" th:href="${'?page=' + (page.number - 1)}" aria-label="上一页">‹</a>
+        <th:block th:each="i : ${#numbers.sequence(T(java.lang.Math).max(0, page.number - 3), T(java.lang.Math).min(page.totalPages - 1, page.number + 3))}">
+            <span class="cur" aria-current="page" th:if="${i == page.number}" th:text="${i + 1}">1</span>
+            <a th:unless="${i == page.number}" th:attr="data-page=${i}" th:href="${'?page=' + i}" th:text="${i + 1}">2</a>
+        </th:block>
+        <a th:if="${page.hasNext()}" th:attr="data-page=${page.number + 1}" th:href="${'?page=' + (page.number + 1)}" aria-label="下一页">›</a>
+    </div>
+</div>
+</body>
+</html>

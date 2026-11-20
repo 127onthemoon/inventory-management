@@ -1,0 +1,356 @@
+{
+ "fps": 30,
+ "total": 180.398,
+ "voice": "zh-CN-XiaoxiaoNeural",
+ "scenes": [
+  {
+   "id": "intro",
+   "kind": "title",
+   "chapter": "项目简介",
+   "start": 0.0,
+   "duration": 16.984,
+   "cues": [
+    {
+     "text": "大家好，这是我的 Java 课程结课项目：高并发库存管理系统。",
+     "say": "大家好，这是我的 Java 课程结课项目：高并发库存管理系统。",
+     "start": 0.4,
+     "duration": 5.112,
+     "audio": "audio/intro-0.mp3"
+    },
+    {
+     "text": "它基于 Spring Boot、JPA、MySQL 和 Thymeleaf，",
+     "say": "它基于 Spring Boot、J P A、My S Q L 和 Thymeleaf 模板引擎，",
+     "start": 5.762,
+     "duration": 5.256,
+     "audio": "audio/intro-1.mp3"
+    },
+    {
+     "text": "目标是在高并发下不超卖、不出现负库存、不重复扣减。",
+     "say": "目标是在高并发下不超卖、不出现负库存、不重复扣减。",
+     "start": 11.268,
+     "duration": 5.016,
+     "audio": "audio/intro-2.mp3"
+    }
+   ]
+  },
+  {
+   "id": "login",
+   "kind": "rec",
+   "chapter": "登录",
+   "start": 16.984,
+   "duration": 10.864,
+   "cues": [
+    {
+     "text": "登录页左侧展示了防超卖的核心：",
+     "say": "登录页左侧展示了防超卖的核心：",
+     "start": 0.4,
+     "duration": 3.024,
+     "audio": "audio/login-0.mp3"
+    },
+    {
+     "text": "一条把“库存是否充足”写进条件里的原子更新语句。",
+     "say": "一条把“库存是否充足”写进条件里的原子更新语句。",
+     "start": 3.674,
+     "duration": 4.176,
+     "audio": "audio/login-1.mp3"
+    },
+    {
+     "text": "我们用管理员账号登录。",
+     "say": "我们用管理员账号登录。",
+     "start": 8.1,
+     "duration": 2.064,
+     "audio": "audio/login-2.mp3"
+    }
+   ]
+  },
+  {
+   "id": "dashboard",
+   "kind": "rec",
+   "chapter": "仪表盘统计",
+   "start": 27.848,
+   "duration": 20.138,
+   "cues": [
+    {
+     "text": "登录后进入数据统计页。",
+     "say": "登录后进入数据统计页。",
+     "start": 0.4,
+     "duration": 2.376,
+     "audio": "audio/dashboard-0.mp3"
+    },
+    {
+     "text": "顶部指标条显示商品总数、库存总量、低库存商品和今日出入库。",
+     "say": "顶部指标条显示商品总数、库存总量、低库存商品和今日出入库。",
+     "start": 3.026,
+     "duration": 5.904,
+     "audio": "audio/dashboard-1.mp3"
+    },
+    {
+     "text": "中间是原生 SVG 绘制的近七日出入库柱状图，每天的入库和出库一目了然；",
+     "say": "中间是用原生矢量图绘制的近七日出入库柱状图，每天的入库和出库一目了然；",
+     "start": 9.18,
+     "duration": 6.744,
+     "audio": "audio/dashboard-2.mp3"
+    },
+    {
+     "text": "右侧是库存健康度和低库存预警。",
+     "say": "右侧是库存健康度和低库存预警。",
+     "start": 16.174,
+     "duration": 3.264,
+     "audio": "audio/dashboard-3.mp3"
+    }
+   ]
+  },
+  {
+   "id": "master",
+   "kind": "rec",
+   "chapter": "商品 / 分类 / 供应商管理",
+   "start": 47.986,
+   "duration": 19.98,
+   "cues": [
+    {
+     "text": "基础资料包括商品、分类和供应商。",
+     "say": "基础资料包括商品、分类和供应商。",
+     "start": 0.4,
+     "duration": 3.552,
+     "audio": "audio/master-0.mp3"
+    },
+    {
+     "text": "商品列表用库存水位条显示库存，刻度线就是预警阈值，",
+     "say": "商品列表用库存水位条显示库存，刻度线就是预警阈值，",
+     "start": 4.202,
+     "duration": 5.088,
+     "audio": "audio/master-1.mp3"
+    },
+    {
+     "text": "低于阈值时变成黄黑警示条纹。",
+     "say": "低于阈值时变成黄黑警示条纹。",
+     "start": 9.54,
+     "duration": 2.952,
+     "audio": "audio/master-2.mp3"
+    },
+    {
+     "text": "删除等危险操作会先弹出确认框。",
+     "say": "删除等危险操作会先弹出确认框。",
+     "start": 12.742,
+     "duration": 3.216,
+     "audio": "audio/master-3.mp3"
+    },
+    {
+     "text": "分类和供应商页面风格保持一致。",
+     "say": "分类和供应商页面风格保持一致。",
+     "start": 16.208,
+     "duration": 3.072,
+     "audio": "audio/master-4.mp3"
+    }
+   ]
+  },
+  {
+   "id": "inbound",
+   "kind": "rec",
+   "chapter": "入库",
+   "start": 67.966,
+   "duration": 13.744,
+   "cues": [
+    {
+     "text": "接下来办理入库。选择商品、填写数量，",
+     "say": "接下来办理入库。选择商品、填写数量，",
+     "start": 0.4,
+     "duration": 4.056,
+     "audio": "audio/inbound-0.mp3"
+    },
+    {
+     "text": "右侧会实时预览入库后的库存。",
+     "say": "右侧会实时预览入库后的库存。",
+     "start": 4.706,
+     "duration": 2.856,
+     "audio": "audio/inbound-1.mp3"
+    },
+    {
+     "text": "提交后，加库存、写入库单和库存流水在同一事务中完成。",
+     "say": "提交后，加库存、写入库单和库存流水在同一事务中完成。",
+     "start": 7.812,
+     "duration": 5.232,
+     "audio": "audio/inbound-2.mp3"
+    }
+   ]
+  },
+  {
+   "id": "outbound",
+   "kind": "rec",
+   "chapter": "出库（含库存不足拒绝）",
+   "start": 81.71,
+   "duration": 16.538,
+   "cues": [
+    {
+     "text": "出库流程相同。",
+     "say": "出库流程相同。",
+     "start": 0.4,
+     "duration": 1.776,
+     "audio": "audio/outbound-0.mp3"
+    },
+    {
+     "text": "如果出库数量超过当前库存，预览面板会提前提示；",
+     "say": "如果出库数量超过当前库存，预览面板会提前提示；",
+     "start": 2.426,
+     "duration": 4.488,
+     "audio": "audio/outbound-1.mp3"
+    },
+    {
+     "text": "提交后，服务端条件更新影响行数为零，请求被拒绝，库存不变。",
+     "say": "提交后，服务端条件更新影响行数为零，请求被拒绝，库存不变。",
+     "start": 7.164,
+     "duration": 5.736,
+     "audio": "audio/outbound-2.mp3"
+    },
+    {
+     "text": "正常数量的出库则立即成功。",
+     "say": "正常数量的出库则立即成功。",
+     "start": 13.15,
+     "duration": 2.688,
+     "audio": "audio/outbound-3.mp3"
+    }
+   ]
+  },
+  {
+   "id": "flows",
+   "kind": "rec",
+   "chapter": "库存流水",
+   "start": 98.248,
+   "duration": 12.736,
+   "cues": [
+    {
+     "text": "每次库存变动都会记入库存流水，",
+     "say": "每次库存变动都会记入库存流水，",
+     "start": 0.4,
+     "duration": 3.048,
+     "audio": "audio/flows-0.mp3"
+    },
+    {
+     "text": "包含变动前后的库存和关联单据号。",
+     "say": "包含变动前后的库存和关联单据号。",
+     "start": 3.698,
+     "duration": 3.24,
+     "audio": "audio/flows-1.mp3"
+    },
+    {
+     "text": "一致性核对页逐个验证：库存等于入库总量减出库总量。",
+     "say": "一致性核对页逐个验证：库存等于入库总量减出库总量。",
+     "start": 7.188,
+     "duration": 4.848,
+     "audio": "audio/flows-2.mp3"
+    }
+   ]
+  },
+  {
+   "id": "permission",
+   "kind": "rec",
+   "chapter": "权限控制",
+   "start": 110.984,
+   "duration": 13.624,
+   "cues": [
+    {
+     "text": "再切换到操作员账号。",
+     "say": "再切换到操作员账号。",
+     "start": 0.4,
+     "duration": 2.16,
+     "audio": "audio/permission-0.mp3"
+    },
+    {
+     "text": "操作员的侧栏没有用户管理，商品只能查看，不能新增或删除。",
+     "say": "操作员的侧栏没有用户管理，商品只能查看，不能新增或删除。",
+     "start": 2.81,
+     "duration": 5.448,
+     "audio": "audio/permission-1.mp3"
+    },
+    {
+     "text": "直接访问用户管理地址，会看到 403 无权限页面。",
+     "say": "直接访问用户管理地址，会看到四零三无权限页面。",
+     "start": 8.508,
+     "duration": 4.416,
+     "audio": "audio/permission-2.mp3"
+    }
+   ]
+  },
+  {
+   "id": "concurrency",
+   "kind": "data",
+   "chapter": "高并发防超卖",
+   "start": 124.608,
+   "duration": 39.406,
+   "cues": [
+    {
+     "text": "最后看高并发防超卖的真实测试结果。",
+     "say": "最后看高并发防超卖的真实测试结果。",
+     "start": 0.4,
+     "duration": 3.456,
+     "audio": "audio/concurrency-0.mp3"
+    },
+    {
+     "text": "库存 50 件，100 个线程同时出库，恰好成功 50 单，最终库存为 0。",
+     "say": "库存 50 件，100 个线程同时出库，恰好成功 50 单，最终库存为 0。",
+     "start": 4.106,
+     "duration": 5.856,
+     "audio": "audio/concurrency-1.mp3"
+    },
+    {
+     "text": "500 个线程并发，同样只成功 50 单，其余 450 个请求因库存不足被拒绝。",
+     "say": "500 个线程并发，同样只成功 50 单，其余 450 个请求因库存不足被拒绝。",
+     "start": 10.212,
+     "duration": 6.456,
+     "audio": "audio/concurrency-2.mp3"
+    },
+    {
+     "text": "同一个幂等号并发提交 100 次，只生效 1 次。",
+     "say": "同一个幂等号并发提交 100 次，只生效 1 次。",
+     "start": 16.918,
+     "duration": 3.888,
+     "audio": "audio/concurrency-3.mp3"
+    },
+    {
+     "text": "作为对照，先读后写的错误写法让 100 个线程都以为卖出成功，库存却只少了 3 件。",
+     "say": "作为对照，先读后写的错误写法让 100 个线程都以为卖出成功，库存却只少了 3 件。",
+     "start": 21.056,
+     "duration": 7.032,
+     "audio": "audio/concurrency-4.mp3"
+    },
+    {
+     "text": "JMeter 持续出库压测吞吐量约每秒 633 次，P95 响应时间 456 毫秒，系统错误率为 0%。",
+     "say": "用 J-Meter 持续出库压测，吞吐量约每秒 633 次，百分之九十五的请求在 456 毫秒内完成，系统错误率为百分之 0。",
+     "start": 28.338,
+     "duration": 10.368,
+     "audio": "audio/concurrency-5.mp3"
+    }
+   ]
+  },
+  {
+   "id": "summary",
+   "kind": "title",
+   "chapter": "总结",
+   "start": 164.014,
+   "duration": 16.384,
+   "cues": [
+    {
+     "text": "总结：系统依靠数据库原子条件更新、事务和唯一约束，",
+     "say": "总结：系统依靠数据库原子条件更新、事务和唯一约束，",
+     "start": 0.4,
+     "duration": 5.016,
+     "audio": "audio/summary-0.mp3"
+    },
+    {
+     "text": "做到不超卖、无负库存、不重复扣减。",
+     "say": "做到不超卖、无负库存、不重复扣减。",
+     "start": 5.666,
+     "duration": 3.48,
+     "audio": "audio/summary-1.mp3"
+    },
+    {
+     "text": "前端按公开设计规范重构，49 个自动化测试全部通过。谢谢观看！",
+     "say": "前端按公开设计规范重构，49 个自动化测试全部通过。谢谢观看！",
+     "start": 9.396,
+     "duration": 6.288,
+     "audio": "audio/summary-2.mp3"
+    }
+   ]
+  }
+ ]
+}

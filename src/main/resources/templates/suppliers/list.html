@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>供应商管理 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1>供应商管理</h1><p>被商品或入库单引用的供应商不能删除</p></div>
+        <div class="actions" sec:authorize="hasRole('ADMIN')"><a class="btn" th:href="@{/suppliers/new}"><svg th:replace="~{fragments/icons :: ic('plus')}"></svg>新增供应商</a></div>
+    </div>
+    <div class="card">
+        <div class="card-head">
+            <form class="filters" method="get" th:action="@{/suppliers}">
+                <label class="search-input"><span class="sr-only">搜索供应商</span><svg th:replace="~{fragments/icons :: ic('search')}"></svg>
+                    <input class="input" type="search" name="keyword" th:value="${keyword}" placeholder="供应商名称…"></label>
+                <button class="btn btn-light" type="submit">查询</button>
+                <a class="btn btn-ghost" th:href="@{/suppliers}">重置</a>
+            </form>
+        </div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>ID</th><th>名称</th><th>联系人</th><th>电话</th><th>邮箱</th><th>地址</th><th sec:authorize="hasRole('ADMIN')">操作</th></tr></thead>
+                <tbody>
+                <tr th:each="s : ${page.content}">
+                    <td class="tnum muted" th:text="${s.id}">1</td>
+                    <td class="name"><b th:text="${s.name}">供应商</b></td>
+                    <td th:text="${s.contactPerson ?: '—'}"></td>
+                    <td class="tnum" th:text="${s.phone ?: '—'}"></td>
+                    <td th:text="${s.email ?: '—'}"></td>
+                    <td th:text="${s.address ?: '—'}"></td>
+                    <td sec:authorize="hasRole('ADMIN')"><div class="row-actions">
+                        <a class="btn-link" th:href="@{/suppliers/{id}/edit(id=${s.id})}">编辑</a>&nbsp;
+                        <form class="inline" method="post" th:action="@{/suppliers/{id}/delete(id=${s.id})}"
+                              th:attr="data-confirm='确定删除供应商【' + ${s.name} + '】吗？'">
+                            <button class="btn-link danger" type="submit">删除</button>
+                        </form>
+                    </div></td>
+                </tr>
+                <tr th:if="${page.totalElements == 0}"><td colspan="7" class="empty"><svg th:replace="~{fragments/icons :: ic('factory')}"></svg><b>没有找到供应商</b>调整搜索条件，或新增一个供应商</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="~{fragments/pager :: pager(${page})}"></div>
+    </div>
+</section>
+</body>
+</html>

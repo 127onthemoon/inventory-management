@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>供应商编辑 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1 th:text="${form.id == null} ? '新增供应商' : '编辑供应商'">新增供应商</h1></div>
+        <a class="btn btn-light" th:href="@{/suppliers}"><svg th:replace="~{fragments/icons :: ic('back')}"></svg>返回列表</a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/suppliers/save}" th:object="${form}" method="post" data-once>
+                <input type="hidden" th:field="*{id}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="name">供应商名称<span class="req">*</span></label>
+                        <input class="input" th:field="*{name}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="contactPerson">联系人</label>
+                        <input class="input" th:field="*{contactPerson}">
+                    </div>
+                    <div class="field">
+                        <label for="phone">电话</label>
+                        <input class="input" th:field="*{phone}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="email">邮箱</label>
+                        <input class="input" th:field="*{email}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></div>
+                    </div>
+                    <div class="field full">
+                        <label for="address">地址</label>
+                        <input class="input" th:field="*{address}">
+                    </div>
+                    <div class="field full">
+                        <label for="remark">备注</label>
+                        <textarea class="input" rows="2" th:field="*{remark}"></textarea>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn">保存</button>
+                    <a class="btn btn-light" th:href="@{/suppliers}">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

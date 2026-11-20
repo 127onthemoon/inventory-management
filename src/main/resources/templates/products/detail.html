@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>商品详情 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1 th:text="${product.name}">商品</h1><p><span class="mono" th:text="${product.code}">P0001</span>
+            <span class="badge" style="margin-left:8px" th:classappend="${product.active} ? 'badge-green' : 'badge-gray'" th:text="${product.active} ? '在售' : '停用'"></span></p></div>
+        <div class="actions">
+            <a class="btn btn-light" th:href="@{/products}"><svg th:replace="~{fragments/icons :: ic('back')}"></svg>返回列表</a>
+            <a class="btn btn-light" sec:authorize="hasRole('ADMIN')" th:href="@{/products/{id}/edit(id=${product.id})}"><svg th:replace="~{fragments/icons :: ic('edit')}"></svg>编辑</a>
+            <a class="btn btn-success" th:href="@{/stock/in/new(productId=${product.id})}"><svg th:replace="~{fragments/icons :: ic('inbound')}"></svg>入库</a>
+            <a class="btn btn-out" th:href="@{/stock/out/new(productId=${product.id})}"><svg th:replace="~{fragments/icons :: ic('outbound')}"></svg>出库</a>
+        </div>
+    </div>
+    <div class="grid grid-2">
+        <div class="card">
+            <div class="card-head"><h2>库存与一致性</h2></div>
+            <div class="card-body">
+                <div class="muted" style="font-size:13px">当前库存</div>
+                <div class="big-stock" th:classappend="${product.lowStock} ? 'text-danger'"><span th:text="${check.stock}">0</span><small th:text="${product.unit}">件</small></div>
+                <span class="gauge big" th:classappend="${product.lowStock} ? (${check.stock == 0} ? 'low zero' : 'low')"
+                      th:attr="data-stock=${check.stock},data-threshold=${product.warningThreshold}"><i></i><span class="mark"></span></span>
+                <p class="hint" style="margin:8px 0 18px" th:text="${'刻度线为预警阈值 ' + product.warningThreshold + ' ' + product.unit + (product.lowStock ? '，当前已低于阈值，建议补货' : '')}"></p>
+                <dl class="kv">
+                    <dt>流水净变动</dt><dd class="tnum" th:text="${check.flowNet}">0</dd>
+                    <dt>流水条数</dt><dd class="tnum" th:text="${check.flowCount}">0</dd>
+                    <dt>单据数</dt><dd class="tnum" th:text="${'入库 ' + check.inOrderCount + ' 张 / 出库 ' + check.outOrderCount + ' 张'}"></dd>
+                </dl>
+                <div class="check-result" style="margin-top:16px" th:classappend="${check.consistent} ? '' : 'bad'">
+                    <svg th:replace="~{fragments/icons :: ic(${check.consistent} ? 'ok' : 'err')}"></svg>
+                    <span th:text="${check.consistent} ? '核对一致：库存 = Σ入库 − Σ出库，流水链连续' : '核对不一致，请检查库存流水'"></span>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-head"><h2>基本信息</h2></div>
+            <div class="card-body">
+                <dl class="kv">
+                    <dt>分类</dt><dd th:text="${product.category.name}">分类</dd>
+                    <dt>供应商</dt><dd th:text="${product.supplier != null ? product.supplier.name : '—'}">供应商</dd>
+                    <dt>单价</dt><dd class="tnum" th:text="${'¥' + #numbers.formatDecimal(product.price, 1, 2)}">¥0</dd>
+                    <dt>计量单位</dt><dd th:text="${product.unit}">件</dd>
+                    <dt>预警阈值</dt><dd class="tnum" th:text="${product.warningThreshold + ' ' + product.unit}">10</dd>
+                    <dt>状态</dt><dd th:text="${product.active} ? '在售（可出入库）' : '停用（不可出入库）'"></dd>
+                    <dt>更新时间</dt><dd class="tnum" th:text="${#temporals.format(product.updatedAt, 'yyyy-MM-dd HH:mm:ss')}"></dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-head"><h2>最近 15 条库存流水</h2><a class="more" th:href="@{/flows(productId=${product.id})}">全部流水<svg th:replace="~{fragments/icons :: ics('next')}"></svg></a></div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>流水号</th><th>时间</th><th>类型</th><th class="num">数量</th><th class="num">库存变化</th><th>关联单据</th><th>操作人</th></tr></thead>
+                <tbody>
+                <tr th:each="f : ${flows}">
+                    <td class="tnum" th:text="${f.id}">1</td>
+                    <td class="tnum" th:text="${#temporals.format(f.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td><span class="badge" th:classappend="${f.changeType.name() == 'IN'} ? 'badge-green' : 'badge-amber'" th:text="${f.changeType.label}"></span></td>
+                    <td class="num" th:classappend="${f.changeType.name() == 'IN'} ? 'delta-in' : 'delta-out'" th:text="${(f.changeType.name() == 'IN' ? '+' : '−') + f.quantity}"></td>
+                    <td class="num change"><span th:text="${f.beforeStock}"></span><svg th:replace="~{fragments/icons :: ics('arrow-right')}"></svg><span th:text="${f.afterStock}"></span></td>
+                    <td class="mono" th:text="${f.refOrderNo}"></td>
+                    <td th:text="${f.operator}"></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(flows)}"><td colspan="7" class="empty">
+                    <svg th:replace="~{fragments/icons :: ic('empty')}"></svg><b>该商品还没有库存流水</b>新商品初始库存为 0，请先办理入库
+                    <br><a class="btn btn-success btn-sm" th:href="@{/stock/in/new(productId=${product.id})}">为该商品入库</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>数据统计 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1>数据统计</h1><p>库存总览、低库存预警与近 7 日出入库趋势</p></div>
+        <div class="actions">
+            <a class="btn btn-success" th:href="@{/stock/in/new}"><svg th:replace="~{fragments/icons :: ic('inbound')}"></svg>新建入库</a>
+            <a class="btn btn-out" th:href="@{/stock/out/new}"><svg th:replace="~{fragments/icons :: ic('outbound')}"></svg>新建出库</a>
+        </div>
+    </div>
+
+    <!-- 指标条：一块面板、四个分区，低库存数 > 0 时用危险色强调 -->
+    <div class="kpis">
+        <div class="kpi">
+            <div class="kpi-label"><svg th:replace="~{fragments/icons :: ic('package')}"></svg>商品总数</div>
+            <div class="kpi-value" th:text="${stats.productCount}">0</div>
+            <div class="kpi-sub">在册 SKU 数量</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label"><svg th:replace="~{fragments/icons :: ic('warehouse')}"></svg>库存总量</div>
+            <div class="kpi-value" data-format-number th:text="${stats.totalStock}">0</div>
+            <div class="kpi-sub">全部商品件数合计</div>
+        </div>
+        <div class="kpi" th:classappend="${stats.lowStockCount > 0} ? 'is-alert'">
+            <div class="kpi-label"><svg th:replace="~{fragments/icons :: ic('alert')}"></svg>低库存商品</div>
+            <div class="kpi-value" th:text="${stats.lowStockCount}">0</div>
+            <div class="kpi-sub">库存 ≤ 预警阈值，需要补货</div>
+        </div>
+        <div class="kpi">
+            <div class="kpi-label"><svg th:replace="~{fragments/icons :: ic('refresh')}"></svg>今日入库 / 出库</div>
+            <div class="kpi-value"><span class="v-in" th:text="${stats.todayInQuantity}">0</span><span class="split">/</span><span class="v-out" th:text="${stats.todayOutQuantity}">0</span></div>
+            <div class="kpi-sub">按件数统计</div>
+        </div>
+    </div>
+
+    <div class="grid grid-3-2">
+        <div class="card chart-card">
+            <div class="card-head">
+                <h2>近 7 日出入库数量</h2>
+                <div class="legend">
+                    <span><i style="background:#2f8a5c"></i>入库</span><span><i style="background:#d06a2c"></i>出库</span>
+                    <div class="seg" role="group" aria-label="纵轴刻度">
+                        <button type="button" aria-pressed="true" data-scale="linear">线性</button>
+                        <button type="button" aria-pressed="false" data-scale="log">对数</button>
+                    </div>
+                </div>
+            </div>
+            <!-- 图表由 app.js 用原生 SVG 绘制；下面这张表既是数据源，也是读屏用户的文字替代 -->
+            <div class="chart-box" id="trend-chart" data-chart="trend">
+                <table class="sr-only" data-chart-source>
+                    <caption>近 7 日每日入库、出库件数</caption>
+                    <thead><tr><th>日期</th><th>入库</th><th>出库</th></tr></thead>
+                    <tbody>
+                    <tr th:each="d : ${stats.daily}"><td th:text="${d.date}">11-15</td><td th:text="${d.inQuantity}">0</td><td th:text="${d.outQuantity}">0</td></tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="chart-foot">
+                <span>近 7 日入库 <b th:text="${stats.weekInOrders}">0</b> 单 / <b th:text="${stats.weekInQuantity}">0</b> 件</span>
+                <span>出库 <b th:text="${stats.weekOutOrders}">0</b> 单 / <b th:text="${stats.weekOutQuantity}">0</b> 件</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-head"><h2>库存健康度</h2><a class="more" th:href="@{/products}">全部商品<svg th:replace="~{fragments/icons :: ics('next')}"></svg></a></div>
+            <div class="donut-wrap" data-chart="donut"
+                 th:attr="data-total=${stats.productCount},data-low=${stats.lowStockCount}">
+                <svg class="donut" viewBox="0 0 140 140" role="img"
+                     th:attr="aria-label=${'共 ' + stats.productCount + ' 个商品，其中 ' + stats.lowStockCount + ' 个低库存'}"></svg>
+                <ul class="donut-legend">
+                    <li><i style="background:var(--teal)"></i>库存充足<b th:text="${stats.productCount - stats.lowStockCount}">0</b></li>
+                    <li><i style="background:var(--signal)"></i>低于预警阈值<b th:text="${stats.lowStockCount}">0</b></li>
+                    <li class="muted" style="font-size:12.5px">阈值在商品资料中按 SKU 单独设置</li>
+                </ul>
+            </div>
+            <div class="table-wrap">
+                <table class="table">
+                    <thead><tr><th>低库存商品</th><th class="num">库存 / 阈值</th><th></th></tr></thead>
+                    <tbody>
+                    <tr th:each="pd, it : ${stats.lowStockProducts}" th:if="${it.index < 4}" class="is-low">
+                        <td class="name clip"><a th:href="@{/products/{id}(id=${pd.id})}" th:text="${pd.name}">商品</a><div class="mono" th:text="${pd.code}">P0001</div></td>
+                        <td class="num">
+                            <div class="stock-cell">
+                                <span class="gauge sm" th:classappend="${pd.stock == 0} ? 'zero'" th:attr="data-stock=${pd.stock},data-threshold=${pd.warningThreshold}"><i></i><span class="mark"></span></span>
+                                <span class="stock-qty low"><span th:text="${pd.stock}">0</span><span class="muted" th:text="${' / ' + pd.warningThreshold}"> / 10</span></span>
+                            </div>
+                        </td>
+                        <td class="num"><a class="btn btn-light btn-sm" th:href="@{/stock/in/new(productId=${pd.id})}">补货</a></td>
+                    </tr>
+                    <tr th:if="${#lists.isEmpty(stats.lowStockProducts)}"><td colspan="3" class="empty">
+                        <svg th:replace="~{fragments/icons :: ic('ok')}"></svg><b>所有商品库存充足</b>没有低于预警阈值的商品</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-head"><h2>最近库存流水<span class="sub">每次库存变动都会留下一条记录</span></h2><a class="more" th:href="@{/flows}">查看全部<svg th:replace="~{fragments/icons :: ics('next')}"></svg></a></div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>时间</th><th>商品</th><th>类型</th><th class="num">数量</th><th class="num">库存变化</th><th>关联单据</th><th>操作人</th></tr></thead>
+                <tbody>
+                <tr th:each="f : ${stats.recentFlows}">
+                    <td class="tnum" th:text="${#temporals.format(f.createdAt, 'MM-dd HH:mm:ss')}">时间</td>
+                    <td th:text="${f.product.name}">商品</td>
+                    <td><span class="badge" th:classappend="${f.changeType.name() == 'IN'} ? 'badge-green' : 'badge-amber'" th:text="${f.changeType.label}">入库</span></td>
+                    <td class="num" th:classappend="${f.changeType.name() == 'IN'} ? 'delta-in' : 'delta-out'" th:text="${(f.changeType.name() == 'IN' ? '+' : '−') + f.quantity}">1</td>
+                    <td class="num change"><span th:text="${f.beforeStock}">0</span><svg th:replace="~{fragments/icons :: ics('arrow-right')}"></svg><span th:text="${f.afterStock}">1</span></td>
+                    <td class="mono" th:text="${f.refOrderNo}">IN...</td>
+                    <td th:text="${f.operator}">admin</td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(stats.recentFlows)}"><td colspan="7" class="empty">
+                    <svg th:replace="~{fragments/icons :: ic('empty')}"></svg><b>还没有库存流水</b>完成第一张入库单后，这里会实时显示变动记录
+                    <br><a class="btn btn-success btn-sm" th:href="@{/stock/in/new}">新建入库单</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

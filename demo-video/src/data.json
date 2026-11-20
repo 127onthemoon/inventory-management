@@ -1,0 +1,128 @@
+{
+  "c01": {
+    "raw": "[CONCURRENCY] TC-C01 100并发抢50 | 成功=50 库存不足拒绝=50 重复提交=0 其他错误=0 | 最终库存=0 | 流水条数=51 流水净变动=0 入库单=1 出库单=50 流水链=连续 | 耗时=260ms",
+    "threads": 100,
+    "stockInit": 50,
+    "success": 50,
+    "rejected": 50,
+    "duplicate": 0,
+    "errors": 0,
+    "finalStock": 0,
+    "outOrders": 50,
+    "chainOk": true
+  },
+  "c02": {
+    "raw": "[CONCURRENCY] TC-C02 500并发抢50 | 成功=50 库存不足拒绝=450 重复提交=0 其他错误=0 | 最终库存=0 | 流水条数=51 流水净变动=0 入库单=1 出库单=50 流水链=连续 | 耗时=420ms",
+    "threads": 500,
+    "stockInit": 50,
+    "success": 50,
+    "rejected": 450,
+    "duplicate": 0,
+    "errors": 0,
+    "finalStock": 0,
+    "outOrders": 50,
+    "chainOk": true
+  },
+  "c04": {
+    "raw": "[CONCURRENCY] TC-C04 同一幂等号100并发 | 成功=1 库存不足拒绝=0 重复提交=99 其他错误=0 | 最终库存=49 | 流水条数=2 流水净变动=49 入库单=1 出库单=1 流水链=连续 | 耗时=86ms",
+    "threads": 100,
+    "success": 1,
+    "rejected": 0,
+    "duplicate": 99,
+    "errors": 0,
+    "finalStock": 49,
+    "outOrders": 1,
+    "chainOk": true
+  },
+  "exp": {
+    "raw": "[EXPERIMENT] 错误写法(读-改-写) 100并发抢50 | 认为卖出=100 最终库存=47 | 实际应扣减=100 而库存只减少了=3 → 发生超卖/丢失更新",
+    "sold": 100,
+    "finalStock": 47,
+    "reduced": 3
+  },
+  "tests": {
+    "total": 49,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "burst100": {
+    "threads": 100,
+    "loops": 1,
+    "samples": 100,
+    "tps": 137.74,
+    "tpsRound": 138,
+    "p95": 718,
+    "ok200": 50,
+    "rej409": 50,
+    "sysErr": 0,
+    "errPct": 0
+  },
+  "burst500": {
+    "threads": 500,
+    "loops": 1,
+    "samples": 500,
+    "tps": 457.46,
+    "tpsRound": 457,
+    "p95": 1078,
+    "ok200": 50,
+    "rej409": 450,
+    "sysErr": 0,
+    "errPct": 0
+  },
+  "idem": {
+    "threads": 100,
+    "loops": 1,
+    "samples": 100,
+    "tps": 175.13,
+    "tpsRound": 175,
+    "p95": 558,
+    "ok200": 100,
+    "rej409": 0,
+    "sysErr": 0,
+    "errPct": 0
+  },
+  "loadout": {
+    "threads": 200,
+    "loops": 50,
+    "samples": 10000,
+    "tps": 632.83,
+    "tpsRound": 633,
+    "p95": 456,
+    "ok200": 10000,
+    "rej409": 0,
+    "sysErr": 0,
+    "errPct": 0
+  },
+  "depletion": {
+    "threads": 200,
+    "loops": 50,
+    "samples": 10000,
+    "tps": 959.51,
+    "tpsRound": 960,
+    "p95": 360,
+    "ok200": 5000,
+    "rej409": 5000,
+    "sysErr": 0,
+    "errPct": 0
+  },
+  "checks": {
+    "checkPages": {
+      "pass": 45,
+      "fail": 0
+    },
+    "smoke": {
+      "pass": 14,
+      "fail": 0
+    },
+    "ui": {
+      "pass": 12,
+      "fail": 0
+    }
+  },
+  "sources": [
+    "docs/test-results/concurrency-test-output-redesign.txt",
+    "docs/test-results/mvn-test-demo-data.log",
+    "perf/results/*-summary.json"
+  ]
+}

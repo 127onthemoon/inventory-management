@@ -1,0 +1,8 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+<!-- 图标片段：引用本地 SVG sprite（/css/icons.svg，Lucide 图标，ISC 协议），装饰性图标对读屏隐藏 -->
+<svg th:fragment="ic(n)" class="ic" aria-hidden="true" focusable="false"><use th:href="@{/css/icons.svg} + '#i-' + ${n}"></use></svg>
+<svg th:fragment="ics(n)" class="ic ic-sm" aria-hidden="true" focusable="false"><use th:href="@{/css/icons.svg} + '#i-' + ${n}"></use></svg>
+</body>
+</html>

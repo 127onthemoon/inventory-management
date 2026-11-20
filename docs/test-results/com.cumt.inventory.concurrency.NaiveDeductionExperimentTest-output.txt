@@ -1,0 +1,4 @@
+2026-11-15T23:26:38.862+08:00  INFO 206632 --- [inventory-management] [           main] t.c.s.AnnotationConfigContextLoaderUtils : Could not detect default configuration classes for test class [com.cumt.inventory.concurrency.NaiveDeductionExperimentTest]: NaiveDeductionExperimentTest does not declare any static, non-private, non-final, nested classes annotated with @Configuration.
+2026-11-15T23:26:38.869+08:00  INFO 206632 --- [inventory-management] [           main] .b.t.c.SpringBootTestContextBootstrapper : Found @SpringBootConfiguration com.cumt.inventory.InventoryApplication for test class com.cumt.inventory.concurrency.NaiveDeductionExperimentTest
+[EXPERIMENT] 错误写法(读-改-写) 100并发抢50 | 认为卖出=100 最终库存=47 | 实际应扣减=100 而库存只减少了=3 → 发生超卖/丢失更新
+[EXPERIMENT] 正确写法(原子条件更新) 100并发抢50 | 成功=50 最终库存=0

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>无权限 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="card error-page">
+        <div class="err-icon"><svg th:replace="~{fragments/icons :: ic('lock')}"></svg></div>
+        <div class="code">403</div>
+        <h2>没有访问权限</h2>
+        <p class="hint">当前账号的角色不能执行这个操作。用户管理和基础资料维护仅限管理员，如需权限请联系管理员。</p>
+        <div class="actions">
+            <button type="button" class="btn btn-light" data-back><svg th:replace="~{fragments/icons :: ic('back')}"></svg>返回上一页</button>
+            <a class="btn" th:href="@{/}">返回首页</a>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>出错了 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="card error-page">
+        <div class="err-icon"><svg th:replace="~{fragments/icons :: ic('alert')}"></svg></div>
+        <div class="code" th:text="${status}">400</div>
+        <h2 th:text="${message}">请求出错</h2>
+        <p class="hint">请检查链接或参数是否正确，然后重试。</p>
+        <div class="actions"><a class="btn" th:href="@{/}">返回首页</a></div>
+    </div>
+</section>
+</body>
+</html>

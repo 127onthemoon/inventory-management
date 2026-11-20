@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>新建出库单 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1>新建出库单</h1><p>库存不足将被拒绝；同一表单重复提交只会扣减一次</p></div>
+        <a class="btn btn-light" th:href="@{/stock/out}"><svg th:replace="~{fragments/icons :: ic('back')}"></svg>返回列表</a>
+    </div>
+    <div class="grid grid-2-1">
+        <div class="card">
+        <div class="card-head"><h2>单据信息</h2></div>
+        <div class="card-body">
+            <form th:action="@{/stock/out}" th:object="${form}" method="post" data-once>
+                <!-- 请求幂等号：打开表单时生成，重复提交时保持不变 -->
+                <input type="hidden" th:field="*{requestId}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="productId">商品<span class="req">*</span></label>
+                        <select class="input" th:field="*{productId}" th:errorclass="invalid" data-stock-hint>
+                            <option value="">请选择商品</option>
+                            <option th:each="pd : ${products}" th:value="${pd.id}"
+                                    th:attr="data-stock=${pd.stock},data-unit=${pd.unit},data-threshold=${pd.warningThreshold},data-name=${pd.name}"
+                                    th:text="${pd.code + ' ' + pd.name}"></option>
+                        </select>
+                        <div class="field-error" th:if="${#fields.hasErrors('productId')}" th:errors="*{productId}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="quantity">出库数量<span class="req">*</span></label>
+                        <input class="input" type="number" min="1" th:field="*{quantity}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="customer">去向 / 客户</label>
+                        <input class="input" th:field="*{customer}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('customer')}" th:errors="*{customer}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="remark">备注</label>
+                        <input class="input" th:field="*{remark}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('remark')}" th:errors="*{remark}"></div>
+                    </div>
+                </div>
+                <div class="reqid" title="打开表单时生成；同一张表单重复提交，服务端只会执行一次"><svg th:replace="~{fragments/icons :: ic('key')}"></svg><span>幂等号 requestId：<span class="mono" th:text="${form.requestId}"></span></span></div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-out"><svg th:replace="~{fragments/icons :: ic('outbound')}"></svg>确认出库</button>
+                    <a class="btn btn-light" th:href="@{/stock/out}">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+        <aside class="card preview" aria-live="polite" data-preview="out">
+            <div class="card-head"><h2>库存预览</h2></div>
+            <div class="card-body">
+                <p class="preview-empty" data-preview-empty>选择商品并填写数量后，这里会显示出库前后的库存。</p>
+                <div data-preview-body hidden>
+                    <div class="preview-row"><span>商品</span><b data-p-name>—</b></div>
+                    <div class="preview-row" style="margin-top:12px"><span>当前库存</span><b data-p-stock>0</b></div>
+                    <span class="gauge big" data-p-gauge><i></i><span class="mark"></span></span>
+                    <div class="preview-row" style="margin-top:12px"><span>本次出库</span><b data-p-qty>0</b></div>
+                    <div class="preview-row preview-after" style="margin-top:12px"><span>出库后预计</span><b data-p-after>0</b></div>
+                    <div class="preview-note" style="margin-top:14px" data-p-note><svg th:replace="~{fragments/icons :: ic('info')}"></svg><span>页面数字仅供参考，以服务端原子更新结果为准。</span></div>
+                </div>
+            </div>
+        </aside>
+    </div>
+</section>
+</body>
+</html>

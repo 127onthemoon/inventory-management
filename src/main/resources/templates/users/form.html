@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>用户编辑 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1 th:text="${form.id == null} ? '新增用户' : '编辑用户'">新增用户</h1></div>
+        <a class="btn btn-light" th:href="@{/users}"><svg th:replace="~{fragments/icons :: ic('back')}"></svg>返回列表</a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/users/save}" th:object="${form}" method="post" data-once>
+                <input type="hidden" th:field="*{id}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="username">用户名<span class="req">*</span></label>
+                        <input class="input" th:field="*{username}" th:errorclass="invalid" th:readonly="${form.id != null}">
+                        <div class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="realName">姓名<span class="req">*</span></label>
+                        <input class="input" th:field="*{realName}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('realName')}" th:errors="*{realName}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="password" th:text="${form.id == null} ? '密码（至少 6 位）' : '新密码（留空不修改）'">密码</label>
+                        <input class="input" type="password" th:field="*{password}" autocomplete="new-password">
+                        <div class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="role">角色<span class="req">*</span></label>
+                        <select class="input" th:field="*{role}">
+                            <option th:each="r : ${roles}" th:value="${r}" th:text="${r.label}"></option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label class="check"><input type="checkbox" th:field="*{enabled}"> 启用账号（禁用后无法登录）</label>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn">保存</button>
+                    <a class="btn btn-light" th:href="@{/users}">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

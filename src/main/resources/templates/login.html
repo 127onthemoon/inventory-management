@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#17232a">
+    <title>登录 - 高并发库存管理系统</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body class="login-page">
+<!-- 左侧主视觉：直接展示系统防超卖所依赖的那一句原子条件更新 SQL（来自 ProductRepository） -->
+<section class="login-hero" aria-label="系统简介">
+    <div class="brand">
+        <div class="brand-logo"><svg th:replace="~{fragments/icons :: ic('warehouse')}"></svg></div>
+        <div class="brand-name">高并发库存管理<small>Inventory System · Java 课程结课项目</small></div>
+    </div>
+    <h2>库存扣减交给数据库的一条原子语句，并发再高也不会超卖。</h2>
+    <p>出库时不先查后改，而是把“库存够不够”写进 UPDATE 的条件里：受影响行数为 1 才算扣减成功，为 0 就是库存不足，直接拒绝。</p>
+    <div class="sql-card" translate="no">
+        <span class="cm">-- ProductRepository.decreaseStock</span><br>
+        <span class="kw">UPDATE</span> product<br>
+        &nbsp;&nbsp;<span class="kw">SET</span> stock = stock - :qty<br>
+        <span class="kw">WHERE</span> id = :id <span class="kw">AND</span> status = 1<br>
+        &nbsp;&nbsp;<span class="kw">AND</span> <span class="hl">stock &gt;= :qty</span>;
+    </div>
+    <div class="hero-facts">
+        <div><b>50 / 50</b>库存 50 件、500 并发抢购的成功单数</div>
+        <div><b>1 次</b>同一幂等号并发提交 100 次的实际生效次数</div>
+    </div>
+    <div class="hazard" aria-hidden="true"></div>
+</section>
+
+<main class="login-panel">
+    <div class="login-card">
+        <h1>登录管理后台</h1>
+        <p class="sub">使用系统账号登录后进行出入库作业</p>
+        <div class="alert alert-error" role="alert" th:if="${param.error}"><svg th:replace="~{fragments/icons :: ic('err')}"></svg><div>用户名或密码错误，或账号已被禁用</div></div>
+        <div class="alert alert-success" role="status" th:if="${param.logout}"><svg th:replace="~{fragments/icons :: ic('ok')}"></svg><div>您已安全退出</div></div>
+        <form th:action="@{/login}" method="post">
+            <div class="field">
+                <label for="username">用户名</label>
+                <input class="input" id="username" name="username" required autofocus autocomplete="username" spellcheck="false" placeholder="例如 admin…">
+            </div>
+            <div class="field">
+                <label for="password">密码</label>
+                <input class="input" id="password" type="password" name="password" required autocomplete="current-password">
+            </div>
+            <button type="submit" class="btn">登录</button>
+        </form>
+        <div class="demo-accounts">
+            演示账号<br>
+            管理员 <code translate="no">admin / admin123</code>（全部权限）<br>
+            操作员 <code translate="no">operator / operator123</code>（只能出入库与查询）
+        </div>
+    </div>
+</main>
+</body>
+</html>

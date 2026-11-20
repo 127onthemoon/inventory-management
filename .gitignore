@@ -1,0 +1,45 @@
+# Build
+target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Logs / runtime
+logs/
+app.log
+app.pid
+*.log
+
+# IDE / OS
+.idea/
+*.iml
+.project
+.classpath
+.settings/
+.vscode/
+*.swp
+.DS_Store
+Thumbs.db
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+
+# Node / Remotion
+node_modules/
+demo-video/node_modules/
+demo-video/build/
+demo-video/out/
+demo-video/public/clips/
+*.mp4
+
+# Local backups and archives
+backup/
+*.zip
+
+# Load-test raw results and local Office copies (contain large binaries / personal info)
+perf/results/
+docs/*.docx
+docs/*.pptx

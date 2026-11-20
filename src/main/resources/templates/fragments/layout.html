@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:fragment="layout(title, content)">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#17232a">
+    <title th:replace="${title}">库存管理系统</title>
+    <link rel="preload" th:href="@{/css/fonts/ibm-plex-sans-latin-400-normal.woff2}" as="font" type="font/woff2" crossorigin>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<a class="skip-link" href="#main">跳到主要内容</a>
+<!-- 整体布局：左侧导航 + 顶栏 + 内容区；侧栏在 ≤1024px 时变为抽屉 -->
+<div class="app" th:with="p=${currentPath ?: ''}">
+    <aside class="sidebar" id="sidebar" aria-label="主导航">
+        <div class="brand">
+            <div class="brand-logo"><svg th:replace="~{fragments/icons :: ic('warehouse')}"></svg></div>
+            <div class="brand-name">高并发库存管理<small>Inventory System</small></div>
+        </div>
+        <nav class="nav">
+            <div class="nav-group">概览</div>
+            <a th:href="@{/}" data-group="概览" th:classappend="${p == '/'} ? 'active'"><svg th:replace="~{fragments/icons :: ic('dashboard')}"></svg>数据统计</a>
+            <div class="nav-group">基础资料</div>
+            <a th:href="@{/products}" data-group="基础资料" th:classappend="${#strings.startsWith(p, '/products')} ? 'active'"><svg th:replace="~{fragments/icons :: ic('package')}"></svg>商品管理</a>
+            <a th:href="@{/categories}" data-group="基础资料" th:classappend="${#strings.startsWith(p, '/categories')} ? 'active'"><svg th:replace="~{fragments/icons :: ic('tags')}"></svg>分类管理</a>
+            <a th:href="@{/suppliers}" data-group="基础资料" th:classappend="${#strings.startsWith(p, '/suppliers')} ? 'active'"><svg th:replace="~{fragments/icons :: ic('factory')}"></svg>供应商管理</a>
+            <div class="nav-group">库存作业</div>
+            <a th:href="@{/stock/in}" data-group="库存作业" th:classappend="${#strings.startsWith(p, '/stock/in')} ? 'active'"><svg th:replace="~{fragments/icons :: ic('inbound')}"></svg>入库管理</a>
+            <a th:href="@{/stock/out}" data-group="库存作业" th:classappend="${#strings.startsWith(p, '/stock/out')} ? 'active'"><svg th:replace="~{fragments/icons :: ic('outbound')}"></svg>出库管理</a>
+            <a th:href="@{/flows}" data-group="库存作业" th:classappend="${#strings.startsWith(p, '/flows')} ? 'active'"><svg th:replace="~{fragments/icons :: ic('flows')}"></svg>库存流水</a>
+            <a th:href="@{/consistency}" data-group="库存作业" th:classappend="${#strings.startsWith(p, '/consistency')} ? 'active'"><svg th:replace="~{fragments/icons :: ic('check')}"></svg>一致性核对</a>
+            <div sec:authorize="hasRole('ADMIN')">
+                <div class="nav-group">系统</div>
+                <a th:href="@{/users}" data-group="系统" th:classappend="${#strings.startsWith(p, '/users')} ? 'active'"><svg th:replace="~{fragments/icons :: ic('users')}"></svg>用户管理</a>
+            </div>
+        </nav>
+        <div class="sidebar-foot"><span class="dot" aria-hidden="true"></span>MySQL 已连接 · Java 课程项目 v1.0</div>
+    </aside>
+    <div class="overlay" data-nav-close aria-hidden="true"></div>
+
+    <div class="main">
+        <header class="topbar">
+            <button type="button" class="btn btn-ghost btn-icon menu-toggle" aria-label="打开导航菜单" aria-controls="sidebar" aria-expanded="false" data-nav-toggle>
+                <svg th:replace="~{fragments/icons :: ic('menu')}"></svg>
+            </button>
+            <!-- 面包屑：由 app.js 根据当前高亮的导航项填充 -->
+            <div class="crumbs" id="crumbs"><span>高并发库存管理系统</span></div>
+            <div class="user-box" sec:authorize="isAuthenticated()">
+                <div class="avatar" aria-hidden="true" th:text="${#strings.substring(currentRealName ?: #authentication.name, 0, 1)}">管</div>
+                <div class="user-meta">
+                    <div class="name" th:text="${currentRealName ?: #authentication.name}">用户</div>
+                    <div class="role">
+                        <span sec:authorize="hasRole('ADMIN')">管理员 · 全部权限</span>
+                        <span sec:authorize="hasRole('OPERATOR')">操作员 · 出入库作业</span>
+                    </div>
+                </div>
+                <form th:action="@{/logout}" method="post" class="inline">
+                    <button type="submit" class="btn btn-light btn-sm" aria-label="退出登录"><svg th:replace="~{fragments/icons :: ics('logout')}"></svg><span class="logout-text">退出登录</span></button>
+                </form>
+            </div>
+        </header>
+
+        <main class="content" id="main" tabindex="-1">
+            <!-- 成功消息：右上角 Toast（4 秒自动消失）；警告/错误：页面顶部常驻提示，直到用户处理 -->
+            <div class="toasts" aria-live="polite">
+                <div class="toast" role="status" th:if="${success}">
+                    <svg th:replace="~{fragments/icons :: ic('ok')}"></svg>
+                    <div class="t-body"><div class="t-title">操作成功</div><div th:text="${success}">成功</div></div>
+                    <button type="button" aria-label="关闭提示" data-dismiss><svg th:replace="~{fragments/icons :: ics('close')}"></svg></button>
+                </div>
+            </div>
+            <div class="alert alert-warning" role="alert" th:if="${warning}"><svg th:replace="~{fragments/icons :: ic('alert')}"></svg><div th:text="${warning}">警告</div></div>
+            <div class="alert alert-error" role="alert" th:if="${error}"><svg th:replace="~{fragments/icons :: ic('err')}"></svg><div th:text="${error}">错误</div></div>
+            <th:block th:replace="${content}">页面内容</th:block>
+        </main>
+    </div>
+</div>
+
+<!-- 通用确认弹窗：替代浏览器原生 confirm()，用于删除、禁用等危险操作 -->
+<dialog class="confirm" id="confirm-dialog" aria-labelledby="confirm-title" aria-describedby="confirm-msg">
+    <div class="confirm-body">
+        <div class="confirm-icon"><svg th:replace="~{fragments/icons :: ic('alert')}"></svg></div>
+        <div><h3 id="confirm-title">请确认操作</h3><p id="confirm-msg">确定执行该操作吗？</p></div>
+    </div>
+    <div class="confirm-actions">
+        <button type="button" class="btn btn-light" data-confirm-cancel>取消</button>
+        <button type="button" class="btn btn-danger" data-confirm-ok>确认</button>
+    </div>
+</dialog>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

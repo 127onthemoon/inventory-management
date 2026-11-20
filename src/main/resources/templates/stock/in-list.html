@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>入库管理 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1>入库管理</h1><p>每张入库单在同一事务中：增加库存 + 写入库单 + 写库存流水</p></div>
+        <a class="btn btn-success" th:href="@{/stock/in/new}"><svg th:replace="~{fragments/icons :: ic('plus')}"></svg>新建入库单</a>
+    </div>
+    <div class="card">
+        <div class="card-head">
+            <form class="filters" method="get" th:action="@{/stock/in}">
+                <select class="input" name="productId" aria-label="按商品筛选">
+                    <option value="">全部商品</option>
+                    <option th:each="pd : ${products}" th:value="${pd.id}" th:text="${pd.code + ' ' + pd.name}"
+                            th:selected="${productId != null and productId == pd.id}"></option>
+                </select>
+                <button class="btn btn-light" type="submit">筛选</button>
+            </form>
+        </div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>入库单号</th><th>时间</th><th>商品</th><th>供应商</th><th class="num">数量</th><th class="num">单价</th>
+                    <th class="num">库存变化</th><th>操作人</th><th>备注</th></tr></thead>
+                <tbody>
+                <tr th:each="o : ${page.content}">
+                    <td class="mono" th:text="${o.orderNo}"></td>
+                    <td class="tnum" th:text="${#temporals.format(o.createdAt, 'yyyy-MM-dd HH:mm:ss')}"></td>
+                    <td><a th:href="@{/products/{id}(id=${o.product.id})}" th:text="${o.product.name}"></a></td>
+                    <td th:text="${o.supplier != null ? o.supplier.name : '—'}"></td>
+                    <td class="num delta-in" th:text="${'+' + o.quantity}"></td>
+                    <td class="num" th:text="${o.unitPrice != null ? '¥' + #numbers.formatDecimal(o.unitPrice, 1, 2) : '—'}"></td>
+                    <td class="num change"><span th:text="${o.beforeStock}"></span><svg th:replace="~{fragments/icons :: ics('arrow-right')}"></svg><span th:text="${o.afterStock}"></span></td>
+                    <td th:text="${o.operator}"></td>
+                    <td th:text="${o.remark ?: ''}"></td>
+                </tr>
+                <tr th:if="${page.totalElements == 0}"><td colspan="9" class="empty"><svg th:replace="~{fragments/icons :: ic('inbound')}"></svg><b>还没有入库单</b>新建一张入库单，库存会原子增加并写入流水<br><a class="btn btn-success btn-sm" th:href="@{/stock/in/new}">新建入库单</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="~{fragments/pager :: pager(${page})}"></div>
+    </div>
+</section>
+</body>
+</html>

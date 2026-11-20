@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>分类管理 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1>分类管理</h1><p>分类下存在商品时不能删除</p></div>
+        <div class="actions" sec:authorize="hasRole('ADMIN')"><a class="btn" th:href="@{/categories/new}"><svg th:replace="~{fragments/icons :: ic('plus')}"></svg>新增分类</a></div>
+    </div>
+    <div class="card">
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>ID</th><th>分类名称</th><th>描述</th><th class="num">商品数</th><th>更新时间</th><th sec:authorize="hasRole('ADMIN')">操作</th></tr></thead>
+                <tbody>
+                <tr th:each="c : ${categories}">
+                    <td class="tnum muted" th:text="${c.id}">1</td>
+                    <td class="name"><a th:href="@{/products(categoryId=${c.id})}" th:text="${c.name}">分类</a></td>
+                    <td th:text="${c.description ?: '—'}">描述</td>
+                    <td class="num"><span class="badge badge-gray plain" th:text="${counts[c.id] + ' 个'}">0</span></td>
+                    <td th:text="${#temporals.format(c.updatedAt, 'yyyy-MM-dd HH:mm')}"></td>
+                    <td sec:authorize="hasRole('ADMIN')"><div class="row-actions">
+                        <a class="btn-link" th:href="@{/categories/{id}/edit(id=${c.id})}">编辑</a>&nbsp;
+                        <form class="inline" method="post" th:action="@{/categories/{id}/delete(id=${c.id})}"
+                              th:attr="data-confirm='确定删除分类【' + ${c.name} + '】吗？'">
+                            <button class="btn-link danger" type="submit">删除</button>
+                        </form>
+                    </div></td>
+                </tr>
+                <tr th:if="${#lists.isEmpty(categories)}"><td colspan="6" class="empty"><svg th:replace="~{fragments/icons :: ic('tags')}"></svg><b>还没有商品分类</b>先建立分类，再为商品归类</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

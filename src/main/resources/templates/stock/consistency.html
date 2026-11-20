@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>一致性核对 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1>库存一致性核对</h1>
+            <p>校验规则：当前库存 = Σ入库流水 − Σ出库流水；流水条数 = 单据数；流水链连续（每条 before = 上一条 after）；库存非负</p></div>
+        <a class="btn btn-light" th:href="@{/consistency}"><svg th:replace="~{fragments/icons :: ic('refresh')}"></svg>重新核对</a>
+    </div>
+    <div class="alert" th:classappend="${report.allConsistent} ? 'alert-success' : 'alert-error'">
+        <svg th:replace="~{fragments/icons :: ic(${report.allConsistent} ? 'ok' : 'err')}"></svg>
+        <span th:if="${report.allConsistent}" th:text="${'全部 ' + report.productCount + ' 个商品核对一致：库存 = Σ入库 − Σ出库，流水链连续'}"></span>
+        <span th:unless="${report.allConsistent}" th:text="${'发现 ' + report.inconsistentCount + ' 个商品不一致，请检查对应流水'}"></span>
+    </div>
+    <div class="card">
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>商品</th><th class="num">当前库存</th><th class="num">流水净变动</th>
+                    <th class="num">流水条数</th><th class="num">入库单</th><th class="num">出库单</th><th>流水链</th><th>结果</th></tr></thead>
+                <tbody>
+                <tr th:each="i : ${report.items}">
+                    <td class="name"><a th:href="@{/products/{id}(id=${i.productId})}" th:text="${i.name}"></a><div class="mono" th:text="${i.code}"></div></td>
+                    <td class="num" th:text="${i.stock}"></td>
+                    <td class="num" th:text="${i.flowNet}"></td>
+                    <td class="num" th:text="${i.flowCount}"></td>
+                    <td class="num" th:text="${i.inOrderCount}"></td>
+                    <td class="num" th:text="${i.outOrderCount}"></td>
+                    <td><span class="badge" th:classappend="${i.chainOk} ? 'badge-green' : 'badge-red'" th:text="${i.chainOk} ? '连续' : '断裂'"></span></td>
+                    <td><span class="badge" th:classappend="${i.consistent} ? 'badge-green' : 'badge-red'" th:text="${i.consistent} ? '一致' : '不一致'"></span></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+</body>
+</html>

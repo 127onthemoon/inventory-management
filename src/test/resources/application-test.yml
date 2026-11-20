@@ -1,0 +1,13 @@
+# 测试环境：连接真实 MySQL 的独立测试库 inventory_test（H2 的锁/MVCC 语义与 InnoDB 不同，
+# 并发测试必须在真实 MySQL 上执行才有意义）
+spring:
+  datasource:
+    url: jdbc:mysql://${DB_HOST:127.0.0.1}:${DB_PORT:3306}/${TEST_DB_NAME:inventory_test}?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true
+    hikari:
+      maximum-pool-size: 50
+  thymeleaf:
+    cache: false
+logging:
+  level:
+    com.cumt.inventory: WARN
+    org.hibernate.engine.jdbc.spi.SqlExceptionHelper: ERROR

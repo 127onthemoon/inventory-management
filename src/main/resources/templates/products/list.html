@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>商品管理 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1>商品管理</h1><p>库存只能通过入库 / 出库变更，商品资料中不可直接修改</p></div>
+        <div class="actions" sec:authorize="hasRole('ADMIN')">
+            <a class="btn" th:href="@{/products/new}"><svg th:replace="~{fragments/icons :: ic('plus')}"></svg>新增商品</a>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-head">
+            <form class="filters" method="get" th:action="@{/products}" role="search">
+                <label class="search-input"><span class="sr-only">搜索商品</span><svg th:replace="~{fragments/icons :: ic('search')}"></svg>
+                    <input class="input" type="search" name="keyword" th:value="${keyword}" placeholder="商品编码或名称…"></label>
+                <select class="input" name="categoryId" aria-label="按分类筛选">
+                    <option value="">全部分类</option>
+                    <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}"
+                            th:selected="${categoryId != null and categoryId == c.id}">分类</option>
+                </select>
+                <button class="btn btn-light" type="submit">查询</button>
+                <a class="btn btn-ghost" th:href="@{/products}">重置</a>
+            </form>
+        </div>
+        <div class="table-wrap">
+            <table class="table">
+                <thead><tr><th>商品</th><th>分类</th><th>供应商</th><th class="num">单价</th>
+                    <th class="num">库存水位</th><th class="num">预警阈值</th><th>状态</th><th>操作</th></tr></thead>
+                <tbody>
+                <tr th:each="pd : ${page.content}" th:classappend="${pd.lowStock} ? 'is-low'">
+                    <td class="name"><a th:href="@{/products/{id}(id=${pd.id})}" th:text="${pd.name}">商品</a><div class="mono" th:text="${pd.code}">P0001</div></td>
+                    <td th:text="${pd.category.name}">分类</td>
+                    <td th:text="${pd.supplier != null ? pd.supplier.name : '—'}">供应商</td>
+                    <td class="num" th:text="${'¥' + #numbers.formatDecimal(pd.price, 1, 2)}">¥0.00</td>
+                    <td class="num">
+                        <!-- 库存水位条：刻度线 = 预警阈值；低库存时变为黄黑警示斜纹 -->
+                        <div class="stock-cell" th:title="${pd.lowStock} ? '低于预警阈值，请及时补货' : '库存充足'">
+                            <span class="gauge" th:classappend="${pd.lowStock} ? (${pd.stock == 0} ? 'low zero' : 'low')"
+                                  th:attr="data-stock=${pd.stock},data-threshold=${pd.warningThreshold}"><i></i><span class="mark"></span></span>
+                            <span class="stock-qty" th:classappend="${pd.lowStock} ? 'low'" th:text="${pd.stock + ' ' + pd.unit}">0</span>
+                        </div>
+                    </td>
+                    <td class="num" th:text="${pd.warningThreshold}">10</td>
+                    <td>
+                        <span th:if="${pd.lowStock and pd.active}" class="badge badge-red">低库存</span>
+                        <span th:unless="${pd.lowStock and pd.active}" class="badge" th:classappend="${pd.active} ? 'badge-green' : 'badge-gray'" th:text="${pd.active} ? '在售' : '停用'">在售</span>
+                    </td>
+                    <td>
+                        <div class="row-actions">
+                            <a class="btn-link" th:href="@{/products/{id}(id=${pd.id})}">详情</a>
+                            <th:block sec:authorize="hasRole('ADMIN')">
+                                <a class="btn-link" th:href="@{/products/{id}/edit(id=${pd.id})}">编辑</a>
+                                <form class="inline" method="post" th:action="@{/products/{id}/delete(id=${pd.id})}"
+                                      th:attr="data-confirm='确定删除商品【' + ${pd.name} + '】吗？有出入库记录的商品无法删除。'">
+                                    <button type="submit" class="btn-link danger">删除</button>
+                                </form>
+                            </th:block>
+                        </div>
+                    </td>
+                </tr>
+                <tr th:if="${page.totalElements == 0}"><td colspan="8" class="empty">
+                    <svg th:replace="~{fragments/icons :: ic('search')}"></svg><b>没有符合条件的商品</b>换个关键字或分类再试试
+                    <br><a class="btn btn-light btn-sm" th:href="@{/products}">清除筛选条件</a></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:replace="~{fragments/pager :: pager(${page})}"></div>
+    </div>
+</section>
+</body>
+</html>

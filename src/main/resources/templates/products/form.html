@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh-CN" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{fragments/layout :: layout(~{::title}, ~{::section})}">
+<head><title>商品编辑 - 库存管理系统</title></head>
+<body>
+<section>
+    <div class="page-head">
+        <div><h1 th:text="${form.id == null} ? '新增商品' : '编辑商品'">新增商品</h1>
+            <p>新商品初始库存为 0，请通过「入库管理」录入库存</p></div>
+        <a class="btn btn-light" th:href="@{/products}"><svg th:replace="~{fragments/icons :: ic('back')}"></svg>返回列表</a>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <form th:action="@{/products/save}" th:object="${form}" method="post" data-once>
+                <input type="hidden" th:field="*{id}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="code">商品编码<span class="req">*</span></label>
+                        <input class="input" th:field="*{code}" th:errorclass="invalid" placeholder="如 P1001">
+                        <div class="field-error" th:if="${#fields.hasErrors('code')}" th:errors="*{code}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="name">商品名称<span class="req">*</span></label>
+                        <input class="input" th:field="*{name}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="categoryId">分类<span class="req">*</span></label>
+                        <select class="input" th:field="*{categoryId}" th:errorclass="invalid">
+                            <option value="">请选择分类</option>
+                            <option th:each="c : ${categories}" th:value="${c.id}" th:text="${c.name}">分类</option>
+                        </select>
+                        <div class="field-error" th:if="${#fields.hasErrors('categoryId')}" th:errors="*{categoryId}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="supplierId">默认供应商</label>
+                        <select class="input" th:field="*{supplierId}">
+                            <option value="">（无）</option>
+                            <option th:each="s : ${suppliers}" th:value="${s.id}" th:text="${s.name}">供应商</option>
+                        </select>
+                    </div>
+                    <div class="field">
+                        <label for="unit">单位<span class="req">*</span></label>
+                        <input class="input" th:field="*{unit}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('unit')}" th:errors="*{unit}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="price">单价（元）<span class="req">*</span></label>
+                        <input class="input" type="number" step="0.01" min="0" th:field="*{price}" th:errorclass="invalid">
+                        <div class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="warningThreshold">预警阈值<span class="req">*</span></label>
+                        <input class="input" type="number" min="0" th:field="*{warningThreshold}" th:errorclass="invalid">
+                        <div class="hint">库存 ≤ 该值时在仪表盘中预警</div>
+                        <div class="field-error" th:if="${#fields.hasErrors('warningThreshold')}" th:errors="*{warningThreshold}"></div>
+                    </div>
+                    <div class="field">
+                        <label for="status">状态</label>
+                        <select class="input" th:field="*{status}">
+                            <option value="1">在售</option>
+                            <option value="0">停用（不可出入库）</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn">保存</button>
+                    <a class="btn btn-light" th:href="@{/products}">取消</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+</body>
+</html>

@@ -1,0 +1,53 @@
+目标：http://127.0.0.1:8080
+[未登录] 访问首页应跳转登录（302）
+  ✔ 302 未登录 /
+  ✔ 200 未登录 /login
+[登录] admin: 302 -> http://127.0.0.1:8080/
+[登录] operator: 302 -> http://127.0.0.1:8080/
+[管理员 admin] 全部页面应返回 200
+  ✔ 200  admin     /                               
+  ✔ 200  admin     /products                       
+  ✔ 200  admin     /products?keyword=P&page=0      
+  ✔ 200  admin     /products/1                     
+  ✔ 200  admin     /products/new                   
+  ✔ 200  admin     /products/1/edit                
+  ✔ 200  admin     /categories                     
+  ✔ 200  admin     /categories/new                 
+  ✔ 200  admin     /categories/1/edit              
+  ✔ 200  admin     /suppliers                      
+  ✔ 200  admin     /suppliers/new                  
+  ✔ 200  admin     /suppliers/1/edit               
+  ✔ 200  admin     /stock/in                       
+  ✔ 200  admin     /stock/in/new                   
+  ✔ 200  admin     /stock/out                      
+  ✔ 200  admin     /stock/out/new                  
+  ✔ 200  admin     /stock/out/new?productId=1      
+  ✔ 200  admin     /flows                          
+  ✔ 200  admin     /flows?type=OUT                 
+  ✔ 200  admin     /consistency                    
+  ✔ 200  admin     /users                          
+  ✔ 200  admin     /users/new                      
+  ✔ 200  admin     /users/2/edit                   
+  ✔ 200  admin     /403                            
+[操作员 operator] 业务页面 200，管理页面 403
+  ✔ 200  operator  /                               
+  ✔ 200  operator  /products                       
+  ✔ 200  operator  /products/1                     
+  ✔ 200  operator  /categories                     
+  ✔ 200  operator  /suppliers                      
+  ✔ 200  operator  /stock/in                       
+  ✔ 200  operator  /stock/in/new                   
+  ✔ 200  operator  /stock/out                      
+  ✔ 200  operator  /stock/out/new                  
+  ✔ 200  operator  /flows                          
+  ✔ 200  operator  /consistency                    
+  ✔ 403  operator  /users                          
+  ✔ 403  operator  /users/new                      
+  ✔ 403  operator  /products/new                   
+  ✔ 403  operator  /products/1/edit                
+  ✔ 403  operator  /categories/new                 
+  ✔ 403  operator  /suppliers/new                  
+[静态资源]
+  ✔ 200  static    /css/app.css                    
+  ✔ 200  static    /js/app.js                      
+结果：全部通过

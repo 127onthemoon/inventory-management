@@ -1,0 +1,4 @@
+-------------------------------------------------------------------------------
+Test set: com.cumt.inventory.service.MasterDataServiceTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 4.818 s -- in com.cumt.inventory.service.MasterDataServiceTest
